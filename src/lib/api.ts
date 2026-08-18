@@ -9,6 +9,13 @@ function getApiBaseUrl(): string {
     if (isNative) {
       return (import.meta.env.VITE_ANDROID_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://10.0.2.2:8000/api/v1').replace(/\/$/, '');
     }
+    if (import.meta.env.VITE_API_BASE_URL) {
+      return import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
+    }
+    // Web in production without hardcoded localhost
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return `${window.location.origin}/api/v1`;
+    }
   }
   return (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1').replace(/\/$/, '');
 }

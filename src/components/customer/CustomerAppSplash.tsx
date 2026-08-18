@@ -35,7 +35,8 @@ export const CustomerAppSplash = ({ onComplete, forceShow = false }: CustomerApp
   useEffect(() => {
     if (!isVisible) return;
 
-    const duration = prefersReducedMotion ? 1200 : 3400;
+    const isNative = typeof window !== "undefined" && Boolean((window as any)?.Capacitor?.isNativePlatform?.());
+    const duration = isNative ? (prefersReducedMotion ? 1200 : 2500) : (prefersReducedMotion ? 600 : 900);
 
     const timer = setTimeout(() => {
       setIsVisible(false);

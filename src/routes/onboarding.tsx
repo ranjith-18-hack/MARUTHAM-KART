@@ -73,10 +73,14 @@ function CustomerOnboardingScreen() {
           if (response.ok) {
             const data = await response.json();
             const addr = data.address || {};
-            const detectedArea = addr.suburb || addr.neighbourhood || addr.residential || addr.road || "Local Area";
-            const detectedCity = addr.city || addr.town || addr.county || addr.state_district || "Coimbatore";
+            const detectedArea = addr.suburb || addr.neighbourhood || addr.residential || addr.road || "";
+            const detectedCity = addr.city || addr.town || addr.county || addr.state_district || "";
             const detectedState = addr.state || "Tamil Nadu";
             const detectedPin = addr.postcode || "";
+
+            if (detectedArea) setArea(detectedArea);
+            if (detectedCity) setCity(detectedCity);
+            if (detectedState) setState(detectedState);
 
             setArea(detectedArea);
             setCity(detectedCity);
@@ -320,7 +324,7 @@ function CustomerOnboardingScreen() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Coimbatore"
+                  placeholder="e.g. Madurai, Salem, etc."
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   style={{ color: "#0f172a", WebkitTextFillColor: "#0f172a", caretColor: "#16803A" }}
