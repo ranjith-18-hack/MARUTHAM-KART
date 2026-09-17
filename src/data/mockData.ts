@@ -102,22 +102,6 @@ export const products: Product[] = [
     deliveryEstimate: 'Today, by 8 PM'
   },
   {
-    id: 'p3',
-    name: 'Stone-Ground Ragi Flour',
-    category: 'Flour',
-    price: 55,
-    unit: 'kg',
-    availability: 'Available',
-    availableQty: 100,
-    rating: 4.8,
-    image: '/products/finger_millet_ragi.jpg',
-    farmer: farmers[2]!,
-    description: 'Traditional stone-ground finger millet flour. Extremely rich in calcium and iron.',
-    qualityInfo: 'Pure Ragi, No Additives, Fine Ground',
-    harvestDate: 'Jan 2026',
-    deliveryEstimate: 'Tomorrow, 8 AM - 12 PM'
-  },
-  {
     id: 'p4',
     name: 'Farm Fresh A2 Milk',
     category: 'Milk & Dairy',
@@ -372,22 +356,6 @@ export const products: Product[] = [
     qualityInfo: 'Easy Peel, High Juice Content, Natural Sweetness',
     harvestDate: 'Yesterday',
     deliveryEstimate: 'Tomorrow, 8 AM - 12 PM'
-  },
-  {
-    id: 'p20',
-    name: 'Unpolished Native Toor Dal',
-    category: 'Pulses',
-    price: 165,
-    unit: 'kg',
-    availability: 'Available',
-    availableQty: 130,
-    rating: 4.9,
-    image: '/products/toor_dal.jpg',
-    farmer: farmers[2]!,
-    description: 'High-protein unpolished pigeon peas dehulled naturally without chemical oil glazing.',
-    qualityInfo: 'Quick Cooking, High Protein, Zero Artificial Color',
-    harvestDate: 'Jan 2026',
-    deliveryEstimate: 'Today, by 8 PM'
   },
   {
     id: 'p21',
