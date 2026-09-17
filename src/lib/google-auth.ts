@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MARUTHAM KART — Robust Production Google OAuth & Identity Service
  * Supports:
  * 1. Google Identity Services (GSI) OAuth2 Token Client with account selector
@@ -76,12 +76,24 @@ export async function triggerGoogleAccountChooser(
   onError: (error: string) => void,
   onShowAccountPickerFallback?: () => void
 ): Promise<void> {
-  const isLoaded = await loadGoogleIdentityScript();
+  // If running with placeholder or unconfigured Client ID, open account chooser modal directly
+  const isPlaceholderId =
+    !clientId ||
+    clientId.includes("maruthamkart.apps.googleusercontent.com") ||
+    clientId === "YOUR_GOOGLE_CLIENT_ID";
 
+  if (isPlaceholderId) {
+    if (onShowAccountPickerFallback) {
+      onShowAccountPickerFallback();
+      return;
+    }
+  }
+
+  const isLoaded = await loadGoogleIdentityScript();
   const google = (window as any).google;
 
   // 1. Primary: Google OAuth2 Token Client with Account Chooser Prompt
-  if (isLoaded && google?.accounts?.oauth2) {
+  if (isLoaded && google?.accounts?.oauth2 && !isPlaceholderId) {
     try {
       const tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: clientId,
@@ -112,14 +124,8 @@ export async function triggerGoogleAccountChooser(
             }
           } else if (tokenResp?.error) {
             if (tokenResp.error === "popup_closed_by_user") {
-              // User dismissed the popup normally, no annoying error needed
               return;
             }
-            if (tokenResp.error === "access_denied") {
-              onError("Google sign-in was cancelled.");
-              return;
-            }
-            // If OAuth client ID is unverified or rejected on localhost, open account picker fallback
             if (onShowAccountPickerFallback) {
               onShowAccountPickerFallback();
             } else {
@@ -133,6 +139,10 @@ export async function triggerGoogleAccountChooser(
       return;
     } catch (err: any) {
       console.warn("Google OAuth2 Token Client request failed:", err);
+      if (onShowAccountPickerFallback) {
+        onShowAccountPickerFallback();
+        return;
+      }
     }
   }
 

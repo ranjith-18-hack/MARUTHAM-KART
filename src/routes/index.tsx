@@ -674,17 +674,31 @@ const GoogleAccountChooserModal = memo(function GoogleAccountChooserModal({
           <div className="space-y-2 py-1">
             <button
               type="button"
-              onClick={() => onSelectAccount("ranjith.marutham@gmail.com", "Ranjith Kumar", "g_ranjith_1")}
+              onClick={() => onSelectAccount("ranjith29012008@gmail.com", "Ranjith R", "g_ranjith_main")}
               className="w-full flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/40 text-left transition-all group active:scale-[0.98]"
             >
               <div className="w-9 h-9 rounded-full bg-emerald-600 text-white font-black text-sm flex items-center justify-center shadow-sm">
                 R
               </div>
               <div className="flex-1 min-w-0">
+                <p className="font-bold text-slate-800 text-xs truncate">Ranjith R</p>
+                <p className="text-[11px] text-slate-500 truncate">ranjith29012008@gmail.com</p>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">Primary</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onSelectAccount("ranjith.marutham@gmail.com", "Ranjith Kumar", "g_ranjith_1")}
+              className="w-full flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/40 text-left transition-all group active:scale-[0.98]"
+            >
+              <div className="w-9 h-9 rounded-full bg-teal-600 text-white font-black text-sm flex items-center justify-center shadow-sm">
+                R
+              </div>
+              <div className="flex-1 min-w-0">
                 <p className="font-bold text-slate-800 text-xs truncate">Ranjith Kumar</p>
                 <p className="text-[11px] text-slate-500 truncate">ranjith.marutham@gmail.com</p>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full">Active</span>
             </button>
 
             <button
