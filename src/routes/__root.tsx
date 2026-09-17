@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" },
+      { name: "viewport", content: "width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" },
       { title: "MARUTHAM KART — FROM FARMERS. FOR EVERYONE." },
       { name: "description", content: "Fresh agricultural products directly from farmers to your doorstep. Premium Quality Rice, Wheat, Flour, Pulses, Dairy and Vegetables." },
       { name: "author", content: "Marutham Kart" },
