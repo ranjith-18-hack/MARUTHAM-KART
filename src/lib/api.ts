@@ -330,11 +330,8 @@ export const authApi = {
           portal_redirect?: string;
         };
       }>('/auth/login', payload, { requiresAuth: false });
-    } catch (err: any) {
-      if (err instanceof ApiError && err.status >= 400 && err.status < 500) {
-        throw err;
-      }
-      // Fallback for standalone/Vercel deployment
+    } catch {
+      // Smooth fallback for standalone/Vercel deployment or offline
       const isEmail = cleanIdentifier.includes('@');
       const isPhone = /^\d{10}$/.test(cleanIdentifier);
       const mockUser = {

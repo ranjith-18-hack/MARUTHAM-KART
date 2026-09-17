@@ -356,6 +356,16 @@ function CustomerOnboardingScreen() {
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save & Continue to Marketplace"}
             </button>
+
+            <div className="text-center mt-3">
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/home" })}
+                className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline py-1"
+              >
+                Skip for now &amp; browse products →
+              </button>
+            </div>
           </form>
         </div>
       </div>
