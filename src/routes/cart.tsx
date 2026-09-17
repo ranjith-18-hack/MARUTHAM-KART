@@ -6,6 +6,7 @@ import { CustomerHeader } from "@/components/customer/CustomerHeader";
 import { CustomerFooter } from "@/components/customer/CustomerFooter";
 import { EmptyStateIllustration } from "@/components/illustrations/IllustrationLibrary";
 import { cartApi } from "@/lib/api";
+import { dispatchCartUpdated } from "@/lib/cart-events";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/cart")({
@@ -49,6 +50,7 @@ function CartPage() {
       setUpdatingId(itemId);
       const updated = await cartApi.updateItem(itemId, newQty);
       setCart(updated);
+      dispatchCartUpdated({ cart: updated, action: "update" });
     } catch (err: any) {
       toast.error(err?.message || "Failed to update quantity");
     } finally {
@@ -61,6 +63,7 @@ function CartPage() {
       setUpdatingId(itemId);
       const updated = await cartApi.removeItem(itemId);
       setCart(updated);
+      dispatchCartUpdated({ cart: updated, action: "remove" });
       toast.success("Item removed from cart");
     } catch (err: any) {
       toast.error(err?.message || "Failed to remove item");

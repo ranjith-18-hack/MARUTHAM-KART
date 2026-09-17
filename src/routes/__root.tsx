@@ -18,6 +18,7 @@ import { AuthProvider } from "../lib/auth-context";
 import { NetworkStatusPill } from "../components/common/NetworkStatusPill";
 import { isRouteAllowedForCurrentApp, getCurrentAppTarget } from "../lib/app-config";
 import { CustomerAppSplash } from "../components/customer/CustomerAppSplash";
+import { FloatingCartBar } from "../components/customer/FloatingCartBar";
 import { useMobileApp } from "../hooks/use-mobile-app";
 
 function NotFoundComponent() {
@@ -166,6 +167,7 @@ function RootComponent() {
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
         </RouteGuard>
+        <FloatingCartBar />
         <NetworkStatusPill />
       </AuthProvider>
     </QueryClientProvider>

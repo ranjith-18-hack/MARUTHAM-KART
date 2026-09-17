@@ -2,6 +2,7 @@ import React, { useState, memo } from "react";
 import { Star, CheckCircle2, MapPin, Plus, Sprout, ShoppingBag, Loader2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cartApi } from "@/lib/api";
+import { dispatchCartUpdated } from "@/lib/cart-events";
 import { toast } from "sonner";
 
 export interface ProductItem {
@@ -46,7 +47,11 @@ export const ProductCard = memo(({ product, priority = false, onAddToCart }: Pro
     try {
       setIsAdding(true);
       setAddedSuccess(true);
-      await cartApi.addItem(product.id, 1);
+      const res = await cartApi.addItem(product.id, 1);
+      dispatchCartUpdated({
+        product: { id: product.id, name: product.name, price: product.price, image_url: product.image_url || product.image },
+        cart: res,
+      });
       toast.success(`Added ${product.name} to cart!`);
       if (onAddToCart) onAddToCart();
       setTimeout(() => setAddedSuccess(false), 1200);

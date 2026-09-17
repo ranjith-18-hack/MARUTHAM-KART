@@ -24,6 +24,7 @@ import { BottomNav } from "@/components/customer/BottomNav";
 import { CustomerHeader } from "@/components/customer/CustomerHeader";
 import { CustomerFooter } from "@/components/customer/CustomerFooter";
 import { catalogApi, cartApi } from "@/lib/api";
+import { dispatchCartUpdated } from "@/lib/cart-events";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/products/$productId")({
@@ -72,7 +73,11 @@ function ProductDetailsPage() {
       if (redirectCheckout) setIsBuying(true);
       else setIsAdding(true);
 
-      await cartApi.addItem(product.id, quantity);
+      const res = await cartApi.addItem(product.id, quantity);
+      dispatchCartUpdated({
+        product: { id: product.id, name: product.name, price: product.price, image_url: primaryImage },
+        cart: res,
+      });
       toast.success(`Added ${quantity} ${product.unit || "kg"} to cart!`);
 
       if (redirectCheckout) {
