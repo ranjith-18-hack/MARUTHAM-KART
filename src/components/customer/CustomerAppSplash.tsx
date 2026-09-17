@@ -35,8 +35,8 @@ export const CustomerAppSplash = ({ onComplete, forceShow = false }: CustomerApp
   useEffect(() => {
     if (!isVisible) return;
 
-    const isNative = typeof window !== "undefined" && Boolean((window as any)?.Capacitor?.isNativePlatform?.());
-    const duration = isNative ? (prefersReducedMotion ? 1200 : 2500) : (prefersReducedMotion ? 600 : 900);
+    // Full 3-act animation duration (3.4s) ensuring all acts, journey steps, and brand logo play completely
+    const duration = prefersReducedMotion ? 1200 : 3400;
 
     const timer = setTimeout(() => {
       setIsVisible(false);
@@ -58,20 +58,21 @@ export const CustomerAppSplash = ({ onComplete, forceShow = false }: CustomerApp
     if (onComplete) onComplete();
   };
 
-  if (!isVisible) {
-    return null;
-  }
-
   return (
-    <div
-      key="marutham-customer-splash-overlay"
-      onClick={handleUserTap}
-      className="fixed inset-0 z-[99999] bg-[#FAFDFB] flex flex-col items-center justify-between p-6 select-none overflow-hidden cursor-pointer"
-      style={{
-        paddingTop: "max(1.75rem, env(safe-area-inset-top, 28px))",
-        paddingBottom: "max(1.75rem, env(safe-area-inset-bottom, 28px))",
-      }}
-    >
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          key="marutham-customer-splash-overlay"
+          onClick={handleUserTap}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, scale: 0.99, transition: { duration: 0.5, ease: "easeInOut" } }}
+          className="fixed inset-0 z-[99999] bg-[#FAFDFB] flex flex-col items-center justify-between p-6 select-none overflow-hidden cursor-pointer"
+          style={{
+            paddingTop: "max(1.75rem, env(safe-area-inset-top, 28px))",
+            paddingBottom: "max(1.75rem, env(safe-area-inset-bottom, 28px))",
+          }}
+        >
           {/* Subtle Ambient Background Contour Lines */}
           <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
             <svg
@@ -295,10 +296,9 @@ export const CustomerAppSplash = ({ onComplete, forceShow = false }: CustomerApp
                 className="h-full bg-emerald-700 rounded-full"
               />
             </div>
-            <span className="text-[9px] font-bold text-slate-400">
-              Tap anywhere to enter
-            </span>
           </div>
-        </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
