@@ -66,7 +66,7 @@ export const CustomerAppSplash = ({ onComplete, forceShow = false }: CustomerApp
           onClick={handleUserTap}
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 0.99, transition: { duration: 0.5, ease: "easeInOut" } }}
+          exit={{ opacity: 0, scale: 0.99, pointerEvents: "none", transition: { duration: 0.3, ease: "easeInOut" } }}
           className="fixed inset-0 z-[99999] bg-[#FAFDFB] flex flex-col items-center justify-between p-6 select-none overflow-hidden cursor-pointer"
           style={{
             paddingTop: "max(1.75rem, env(safe-area-inset-top, 28px))",

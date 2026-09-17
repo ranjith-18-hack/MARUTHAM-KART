@@ -115,26 +115,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", href: "/favicon.png" },
     ],
   }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Toaster position="top-center" expand={false} richColors />
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RouteGuard({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -169,6 +153,7 @@ function RootComponent() {
         </RouteGuard>
         <FloatingCartBar />
         <NetworkStatusPill />
+        <Toaster position="top-center" expand={false} richColors />
       </AuthProvider>
     </QueryClientProvider>
   );
