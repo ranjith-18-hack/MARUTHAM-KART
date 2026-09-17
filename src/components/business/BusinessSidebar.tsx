@@ -1,9 +1,11 @@
-import { LayoutDashboard, ShoppingBag, ClipboardList, PieChart, User, Bell, HelpCircle, MessageSquare, Settings, Truck, Repeat, FileText, CreditCard, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, ClipboardList, PieChart, User, Bell, HelpCircle, MessageSquare, Settings, Truck, Repeat, FileText, CreditCard, ArrowLeft, LogOut } from "lucide-react";
 import { Link, useLocation } from "@tanstack/react-router";
 import logoAsset from "@/assets/marutham-logo-v3.png.asset.json";
+import { useAuth } from "@/lib/auth-context";
 
 export const BusinessSidebar = () => {
   const location = useLocation();
+  const { logout } = useAuth();
   
   const menuItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/business/dashboard" },
@@ -89,7 +91,7 @@ export const BusinessSidebar = () => {
         })}
       </nav>
 
-      <div className="p-4 border-t border-slate-200">
+      <div className="p-4 border-t border-slate-200 space-y-2">
         <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center space-x-3">
           <div className="w-8 h-8 bg-[#16803A] rounded-full flex items-center justify-center text-white text-xs font-black">GH</div>
           <div className="flex-1 min-w-0">
@@ -97,6 +99,15 @@ export const BusinessSidebar = () => {
             <p className="text-[10px] text-[#16803A] font-bold uppercase tracking-wider">✓ Verified</p>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => logout()}
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>Sign Out</span>
+        </button>
       </div>
     </aside>
   );

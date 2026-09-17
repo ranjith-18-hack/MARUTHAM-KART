@@ -9,12 +9,15 @@ import {
   ChevronLeft,
   Building,
   FileSpreadsheet,
-  AlertCircle
+  AlertCircle,
+  LogOut
 } from "lucide-react";
 import logoAsset from "@/assets/marutham-logo-v3.png.asset.json";
+import { useAuth } from "@/lib/auth-context";
 
 export default function OfficeLayout({ children }: { children?: React.ReactNode }) {
   const location = useLocation();
+  const { logout } = useAuth();
   const navItems = [
     { name: "Finance Dashboard", path: "/office/dashboard", icon: LayoutDashboard },
     { name: "Department Reports", path: "/office/reports", icon: FileSpreadsheet },
@@ -58,11 +61,19 @@ export default function OfficeLayout({ children }: { children?: React.ReactNode 
           ))}
         </nav>
 
-        <div className="p-6 border-t border-slate-800">
+        <div className="p-6 border-t border-slate-800 space-y-3">
           <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Fiscal Year 2026-27</p>
             <p className="text-xs font-bold text-white">Q2 Performance: <span className="text-green-500">+12.4%</span></p>
           </div>
+          <button
+            type="button"
+            onClick={() => logout()}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-red-950/50 hover:bg-red-900/60 text-red-300 border border-red-900/50 rounded-xl text-xs font-bold transition-all cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
         </div>
       </aside>
 

@@ -15,13 +15,16 @@ import {
   MessageSquare, 
   Settings,
   ArrowLeft,
-  Truck
+  Truck,
+  LogOut
 } from "lucide-react";
 import { Link, useLocation } from "@tanstack/react-router";
 import logoAsset from "@/assets/marutham-logo-v3.png.asset.json";
+import { useAuth } from "@/lib/auth-context";
 
 export const GodownSidebar = () => {
   const location = useLocation();
+  const { logout } = useAuth();
   
   const mainNav = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/godown/dashboard" },
@@ -117,7 +120,7 @@ export const GodownSidebar = () => {
         })}
       </nav>
 
-      <div className="p-4 border-t border-slate-100">
+      <div className="p-4 border-t border-slate-100 space-y-2">
         <div className="bg-[#F5FBF7] p-3 rounded-xl border border-[#DCE8DF] flex items-center space-x-3">
           <div className="w-8 h-8 bg-[#16803A] rounded-full flex items-center justify-center text-white text-[10px] font-black">PR</div>
           <div className="flex-1 min-w-0">
@@ -125,6 +128,15 @@ export const GodownSidebar = () => {
             <p className="text-[8px] text-[#16803A] font-black uppercase tracking-widest mt-0.5">Godown Officer</p>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => logout()}
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>Sign Out</span>
+        </button>
       </div>
     </aside>
   );

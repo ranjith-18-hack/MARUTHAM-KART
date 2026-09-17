@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { drivers, vehicles } from "@/data/mockData";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/driver/profile")({
   component: DriverProfile,
@@ -24,12 +25,12 @@ export const Route = createFileRoute("/driver/profile")({
 
 function DriverProfile() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const driver = drivers.find(d => d.id === 'MK-DRI-1042') || drivers[0];
   const vehicle = vehicles.find(v => v.id === driver?.vehicleId) || vehicles[0];
 
-  const handleLogout = () => {
-    toast.success("Logged out successfully");
-    navigate({ to: "/driver" });
+  const handleLogout = async () => {
+    await logout();
   };
 
   const [availability, setAvailability] = useState<"AVAILABLE" | "ON DELIVERY" | "BREAK" | "OFF DUTY" | "UNAVAILABLE">(driver?.status || 'AVAILABLE');

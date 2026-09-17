@@ -1,9 +1,11 @@
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, Users, FileText, CheckCircle2, UserPlus, Settings, Bell, MessageSquare, ChevronLeft } from "lucide-react";
+import { LayoutDashboard, Users, FileText, CheckCircle2, UserPlus, Settings, Bell, MessageSquare, ChevronLeft, LogOut } from "lucide-react";
 import logoAsset from "@/assets/marutham-logo-v3.png.asset.json";
+import { useAuth } from "@/lib/auth-context";
 
 export default function RecruitmentLayout({ children }: { children?: React.ReactNode }) {
   const location = useLocation();
+  const { logout } = useAuth();
   const navItems = [
     { name: "Dashboard", path: "/recruitment/dashboard", icon: LayoutDashboard },
     { name: "Applications", path: "/recruitment/applications", icon: FileText },
@@ -50,6 +52,16 @@ export default function RecruitmentLayout({ children }: { children?: React.React
             </Link>
           ))}
         </nav>
+        <div className="p-4 border-t border-[#DCE8DF]">
+          <button
+            type="button"
+            onClick={() => logout()}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -62,6 +74,14 @@ export default function RecruitmentLayout({ children }: { children?: React.React
               <p className="text-sm font-black text-primary-text">Sundar C</p>
               <p className="text-[10px] text-secondary-text uppercase">Recruitment Officer</p>
             </div>
+            <button
+              type="button"
+              onClick={() => logout()}
+              className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all"
+              title="Sign Out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </header>
         <div className="flex-1 p-6 overflow-y-auto">

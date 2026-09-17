@@ -66,7 +66,7 @@ export const FarmerSidebar = () => {
         })}
       </nav>
 
-      <div className="p-4 border-t border-border-color">
+      <div className="p-4 border-t border-border-color space-y-2">
         <div className="bg-[#F5FBF7] p-3 rounded-xl border border-[#DCE8DF] flex items-center space-x-3">
           <div className="w-8 h-8 bg-[#16803A] rounded-full flex items-center justify-center text-white text-xs font-black">AK</div>
           <div className="flex-1 min-w-0">
@@ -74,6 +74,21 @@ export const FarmerSidebar = () => {
             <p className="text-[10px] text-primary-green font-bold">✓ Verified Farmer</p>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            try {
+              localStorage.removeItem("mk_access_token");
+              localStorage.removeItem("mk_refresh_token");
+              localStorage.removeItem("mk_user_profile");
+            } catch {}
+            window.location.href = "/";
+          }}
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+        >
+          <span>Sign Out</span>
+        </button>
       </div>
     </aside>
   );

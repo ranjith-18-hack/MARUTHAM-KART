@@ -261,11 +261,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Ignore errors on logout
     } finally {
       tokenStorage.clear();
+      try {
+        localStorage.removeItem("mk_access_token");
+        localStorage.removeItem("mk_refresh_token");
+        localStorage.removeItem("mk_user_profile");
+        sessionStorage.removeItem("mk_customer_splash_seen");
+      } catch {}
       setUser(null);
       setActiveAddress(null);
       setAddresses([]);
       setNeedsOnboarding(false);
       toast.info("You have been signed out.");
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
     }
   };
 
