@@ -996,9 +996,11 @@ function CustomerAuthScreen() {
 
         if (res.success) {
           navigate({ to: "/onboarding" });
+        } else if (res.error) {
+          setErrorMsg(res.error);
         }
       } catch (err: any) {
-        setErrorMsg(err.message || "Registration failed. Account may already exist.");
+        setErrorMsg(err.message || "Registration failed. Please try again.");
       } finally {
         setLoading(false);
       }

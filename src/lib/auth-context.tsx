@@ -246,9 +246,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.success("Account created successfully!");
       return { success: true, needsOnboarding: true };
     } catch (error: any) {
-      const msg = error instanceof ApiError ? error.message : "Registration failed";
+      const msg = error instanceof ApiError ? error.message : (error?.message || "Registration failed. Please check your details.");
       toast.error(msg);
-      return { success: false };
+      return { success: false, error: msg };
     } finally {
       setIsLoading(false);
     }
