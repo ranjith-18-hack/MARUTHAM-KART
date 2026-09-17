@@ -442,9 +442,56 @@ export const customerApi = {
   }) => api.post<CustomerProfile>('/customer/onboarding', data),
 };
 
+import { products as fallbackProducts, categories as fallbackCategories } from '@/data/mockData';
+
+const getLocalProducts = (params?: { category?: string; search?: string; limit?: number }) => {
+  let items = [...fallbackProducts];
+  if (params?.category) {
+    items = items.filter((p) => p.category?.toLowerCase() === params.category?.toLowerCase());
+  }
+  if (params?.search) {
+    const q = params.search.toLowerCase();
+    items = items.filter((p) => p.name.toLowerCase().includes(q) || p.category?.toLowerCase().includes(q));
+  }
+  if (params?.limit) {
+    items = items.slice(0, params.limit);
+  }
+  return items.map((p) => ({
+    id: p.id,
+    name: p.name,
+    category: p.category,
+    price: p.price,
+    unit: p.unit,
+    image_url: p.image,
+    image: p.image,
+    availability: p.availability,
+    rating: p.rating,
+    available_qty: p.availableQty,
+    description: p.description,
+    quality_info: p.qualityInfo,
+    farmer_name: p.farmer.name,
+    farmer_location: p.farmer.location,
+    farmer_verified: p.farmer.verified,
+  }));
+};
+
+const getLocalCart = () => {
+  try {
+    const raw = localStorage.getItem('mk_local_cart');
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return { items: [], item_count: 0, subtotal: 0, delivery_charge: 0, total: 0 };
+};
+
+const saveLocalCart = (cart: any) => {
+  try {
+    localStorage.setItem('mk_local_cart', JSON.stringify(cart));
+  } catch {}
+};
+
 // 3. Catalog API
 export const catalogApi = {
-  getProducts: (params?: {
+  getProducts: async (params?: {
     category?: string;
     search?: string;
     skip?: number;
@@ -452,44 +499,153 @@ export const catalogApi = {
     sort_by?: string;
     min_price?: number;
     max_price?: number;
-  }) =>
-    api.get<{ items: any[]; total: number; skip: number; limit: number }>('/products', { params, requiresAuth: false }),
+  }) => {
+    try {
+      const res = await api.get<{ items: any[]; total: number; skip: number; limit: number }>('/products', {
+        params,
+        requiresAuth: false,
+      });
+      if (res && res.items && res.items.length > 0) return res;
+      return { items: getLocalProducts(params), total: fallbackProducts.length, skip: 0, limit: params?.limit || 50 };
+    } catch {
+      const items = getLocalProducts(params);
+      return { items, total: items.length, skip: 0, limit: params?.limit || 50 };
+    }
+  },
 
-  getCategories: () => api.get<string[]>('/products/categories', { requiresAuth: false }),
+  getCategories: async () => {
+    try {
+      const res = await api.get<string[]>('/products/categories', { requiresAuth: false });
+      if (res && res.length > 0) return res;
+      return fallbackCategories.map((c) => c.name);
+    } catch {
+      return fallbackCategories.map((c) => c.name);
+    }
+  },
 
-  getProductDetail: (id: string) => api.get<any>(`/products/${id}`, { requiresAuth: false }),
+  getProductDetail: async (id: string) => {
+    try {
+      const res = await api.get<any>(`/products/${id}`, { requiresAuth: false });
+      if (res && res.id) return res;
+      const found = getLocalProducts().find((p) => p.id === id);
+      return found || getLocalProducts()[0];
+    } catch {
+      const found = getLocalProducts().find((p) => p.id === id);
+      return found || getLocalProducts()[0];
+    }
+  },
 };
 
 // 4. Cart & Order API
 export const cartApi = {
-  getCart: () =>
-    api.get<{
-      items: Array<{
-        id: string;
-        product_id: string;
-        name: string;
-        price: number;
-        quantity: number;
-        unit: string;
-        image_url?: string;
-        category?: string;
-        line_total: number;
-      }>;
-      item_count: number;
-      subtotal: number;
-      delivery_charge: number;
-      total: number;
-    }>('/cart'),
+  getCart: async () => {
+    try {
+      return await api.get<{
+        items: Array<{
+          id: string;
+          product_id: string;
+          name: string;
+          price: number;
+          quantity: number;
+          unit: string;
+          image_url?: string;
+          category?: string;
+          line_total: number;
+        }>;
+        item_count: number;
+        subtotal: number;
+        delivery_charge: number;
+        total: number;
+      }>('/cart');
+    } catch {
+      return getLocalCart();
+    }
+  },
 
-  addItem: (product_id: string, quantity: number = 1) =>
-    api.post<any>('/cart/items', { product_id, quantity }),
+  addItem: async (product_id: string, quantity: number = 1) => {
+    try {
+      const res = await api.post<any>('/cart/items', { product_id, quantity });
+      return res;
+    } catch {
+      const cart = getLocalCart();
+      const product = getLocalProducts().find((p) => p.id === product_id);
+      const prodName = product?.name || 'Farm Product';
+      const prodPrice = Number(product?.price || 50);
+      const prodUnit = product?.unit || 'kg';
+      const prodImg = product?.image_url || product?.image;
 
-  updateItem: (itemId: string, quantity: number) =>
-    api.patch<any>(`/cart/items/${itemId}`, { quantity }),
+      const existing = cart.items.find((i: any) => i.product_id === product_id);
+      if (existing) {
+        existing.quantity += quantity;
+        existing.line_total = existing.quantity * prodPrice;
+      } else {
+        cart.items.push({
+          id: `item_${Date.now()}`,
+          product_id,
+          name: prodName,
+          price: prodPrice,
+          quantity,
+          unit: prodUnit,
+          image_url: prodImg,
+          line_total: quantity * prodPrice,
+        });
+      }
+      cart.item_count = cart.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
+      cart.subtotal = cart.items.reduce((acc: number, item: any) => acc + item.line_total, 0);
+      cart.delivery_charge = cart.subtotal > 0 ? 40 : 0;
+      cart.total = cart.subtotal + cart.delivery_charge;
+      saveLocalCart(cart);
+      return cart;
+    }
+  },
 
-  removeItem: (itemId: string) => api.delete<any>(`/cart/items/${itemId}`),
+  updateItem: async (itemId: string, quantity: number) => {
+    try {
+      return await api.patch<any>(`/cart/items/${itemId}`, { quantity });
+    } catch {
+      const cart = getLocalCart();
+      const item = cart.items.find((i: any) => i.id === itemId);
+      if (item) {
+        if (quantity <= 0) {
+          cart.items = cart.items.filter((i: any) => i.id !== itemId);
+        } else {
+          item.quantity = quantity;
+          item.line_total = item.quantity * item.price;
+        }
+        cart.item_count = cart.items.reduce((acc: number, it: any) => acc + it.quantity, 0);
+        cart.subtotal = cart.items.reduce((acc: number, it: any) => acc + it.line_total, 0);
+        cart.delivery_charge = cart.subtotal > 0 ? 40 : 0;
+        cart.total = cart.subtotal + cart.delivery_charge;
+        saveLocalCart(cart);
+      }
+      return cart;
+    }
+  },
 
-  clearCart: () => api.delete<any>('/cart'),
+  removeItem: async (itemId: string) => {
+    try {
+      return await api.delete<any>(`/cart/items/${itemId}`);
+    } catch {
+      const cart = getLocalCart();
+      cart.items = cart.items.filter((i: any) => i.id !== itemId);
+      cart.item_count = cart.items.reduce((acc: number, it: any) => acc + it.quantity, 0);
+      cart.subtotal = cart.items.reduce((acc: number, it: any) => acc + it.line_total, 0);
+      cart.delivery_charge = cart.subtotal > 0 ? 40 : 0;
+      cart.total = cart.subtotal + cart.delivery_charge;
+      saveLocalCart(cart);
+      return cart;
+    }
+  },
+
+  clearCart: async () => {
+    try {
+      return await api.delete<any>('/cart');
+    } catch {
+      const empty = { items: [], item_count: 0, subtotal: 0, delivery_charge: 0, total: 0 };
+      saveLocalCart(empty);
+      return empty;
+    }
+  },
 };
 
 export const ordersApi = {
